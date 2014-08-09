@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WebVolley</title>
+<style type="text/css">
+canvas#canvas {
+	cursor: url('media/cursor.png'),auto;
+}
+</style>
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+</head>
+<body style="background-color:#00007F;text-align:center">
+<canvas id="canvas" width="800" height="600">
+<p>Unsupported Browser.</p>
+</canvas>
+<script type="text/javascript">
+if (typeof KeyEvent === 'undefined') {
+	KeyEvent = {
+		DOM_VK_CANCEL: 3,
+		DOM_VK_HELP: 6,
+		DOM_VK_BACK_SPACE: 8,
+		DOM_VK_TAB: 9,
+		DOM_VK_CLEAR: 12,
+		DOM_VK_RETURN: 13,
+		DOM_VK_ENTER: 14,
+		DOM_VK_SHIFT: 16,
+		DOM_VK_CONTROL: 17,
+		DOM_VK_ALT: 18,
+		DOM_VK_PAUSE: 19,
+		DOM_VK_CAPS_LOCK: 20,
+		DOM_VK_ESCAPE: 27,
+		DOM_VK_SPACE: 32,
+		DOM_VK_PAGE_UP: 33,
+		DOM_VK_PAGE_DOWN: 34,
+		DOM_VK_END: 35,
+		DOM_VK_HOME: 36,
+		DOM_VK_LEFT: 37,
+		DOM_VK_UP: 38,
+		DOM_VK_RIGHT: 39,
+		DOM_VK_DOWN: 40,
+		DOM_VK_PRINTSCREEN: 44,
+		DOM_VK_INSERT: 45,
+		DOM_VK_DELETE: 46,
+		DOM_VK_0: 48,
+		DOM_VK_1: 49,
+		DOM_VK_2: 50,
+		DOM_VK_3: 51,
+		DOM_VK_4: 52,
+		DOM_VK_5: 53,
+		DOM_VK_6: 54,
+		DOM_VK_7: 55,
+		DOM_VK_8: 56,
+		DOM_VK_9: 57,
+		DOM_VK_SEMICOLON: 59,
+		DOM_VK_EQUALS: 61,
+		DOM_VK_A: 65,
+		DOM_VK_B: 66,
+		DOM_VK_C: 67,
+		DOM_VK_D: 68,
+		DOM_VK_E: 69,
+		DOM_VK_F: 70,
+		DOM_VK_G: 71,
+		DOM_VK_H: 72,
+		DOM_VK_I: 73,
+		DOM_VK_J: 74,
+		DOM_VK_K: 75,
+		DOM_VK_L: 76,
+		DOM_VK_M: 77,
+		DOM_VK_N: 78,
+		DOM_VK_O: 79,
+		DOM_VK_P: 80,
+		DOM_VK_Q: 81,
+		DOM_VK_R: 82,
+		DOM_VK_S: 83,
+		DOM_VK_T: 84,
+		DOM_VK_U: 85,
+		DOM_VK_V: 86,
+		DOM_VK_W: 87,
+		DOM_VK_X: 88,
+		DOM_VK_Y: 89,
+		DOM_VK_Z: 90,
+		DOM_VK_CONTEXT_MENU: 93,
+		DOM_VK_NUMPAD0: 96,
+		DOM_VK_NUMPAD1: 97,
+		DOM_VK_NUMPAD2: 98,
+		DOM_VK_NUMPAD3: 99,
+		DOM_VK_NUMPAD4: 100,
+		DOM_VK_NUMPAD5: 101,
+		DOM_VK_NUMPAD6: 102,
+		DOM_VK_NUMPAD7: 103,
+		DOM_VK_NUMPAD8: 104,
+		DOM_VK_NUMPAD9: 105,
+		DOM_VK_MULTIPLY: 106,
+		DOM_VK_ADD: 107,
+		DOM_VK_SEPARATOR: 108,
+		DOM_VK_SUBTRACT: 109,
+		DOM_VK_DECIMAL: 110,
+		DOM_VK_DIVIDE: 111,
+		DOM_VK_F1: 112,
+		DOM_VK_F2: 113,
+		DOM_VK_F3: 114,
+		DOM_VK_F4: 115,
+		DOM_VK_F5: 116,
+		DOM_VK_F6: 117,
+		DOM_VK_F7: 118,
+		DOM_VK_F8: 119,
+		DOM_VK_F9: 120,
+		DOM_VK_F10: 121,
+		DOM_VK_F11: 122,
+		DOM_VK_F12: 123,
+		DOM_VK_F13: 124,
+		DOM_VK_F14: 125,
+		DOM_VK_F15: 126,
+		DOM_VK_F16: 127,
+		DOM_VK_F17: 128,
+		DOM_VK_F18: 129,
+		DOM_VK_F19: 130,
+		DOM_VK_F20: 131,
+		DOM_VK_F21: 132,
+		DOM_VK_F22: 133,
+		DOM_VK_F23: 134,
+		DOM_VK_F24: 135,
+		DOM_VK_NUM_LOCK: 144,
+		DOM_VK_SCROLL_LOCK: 145,
+		DOM_VK_COMMA: 188,
+		DOM_VK_PERIOD: 190,
+		DOM_VK_SLASH: 191,
+		DOM_VK_BACK_QUOTE: 192,
+		DOM_VK_OPEN_BRACKET: 219,
+		DOM_VK_BACK_SLASH: 220,
+		DOM_VK_CLOSE_BRACKET: 221,
+		DOM_VK_QUOTE: 222,
+		DOM_VK_META: 224
+	};
+}
+
+var rate = 75;
+var period = Math.round(1000 / rate);
+
+var images = {};
+var keyboard = {};
+
+function Ball(x) {
+	var y = -31;
+	var ballImages = [
+		'ball01',
+		'ball02',
+		'ball03',
+		'ball04',
+		'ball05',
+		'ball06',
+		'ball07',
+		'ball08',
+		'ball09',
+		'ball10',
+		'ball11',
+		'ball12',
+		'ball13',
+		'ball14',
+		'ball15',
+		'ball16'
+	];
+	var counter = 0;
+	var framePeriod = 175;
+	var velocity = {
+		x: 0,
+		y: 0
+	};
+
+	function testCollision(x0, y0, r, v) {
+		var h = Math.sqrt((x - x0) * (x - x0) + (y - y0) * (y - y0));
+		if (h < 32 + r) {
+			frozen = false;
+			velocity.x = (x - x0) * v / h;
+			velocity.y = (y - y0) * v / h;
+			x = x0 + (x - x0) * (32 + r) / h;
+			y = y0 + (y - y0) * (32 + r) / h;
+		}
+	}
+
+	var frozen = false;
+	var over = false;
+
+	this.tick = function () {
+		counter = (counter + 1) % (16 * framePeriod / period);
+		if (!frozen) {
+			velocity.y += 0.25;
+		}
+		x += velocity.x;
+		if (x - 32 < -400) {
+			velocity.x = Math.abs(velocity.x);
+			x = -400 + 32;
+		}
+		if (x + 32 > 400) {
+			velocity.x = -Math.abs(velocity.x);
+			x = 400 - 32;
+		}
+		y += velocity.y;
+		if (y > 150) {
+			velocity.y = -Math.abs(velocity.y);
+			y = 150;
+		}
+		if (y > -15) {
+			if ((x > 0) && (x - 32 - 7 < 0)) {
+				velocity.x = Math.abs(velocity.x);
+				x = 32 + 7;
+			}
+			if ((x < 0) && (x + 32 + 7 > 0)) {
+				velocity.x = -Math.abs(velocity.x);
+				x = -32 - 7;
+			}
+		} else if (y + 32 > -15) {
+			var v = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+			testCollision(0, -15, 7, v);
+		}
+		if (over) {
+			// TODO
+		}
+	};
+
+	this.testCollision = function (x0, y0, r) {
+		return testCollision(x0, y0, r, 13);
+	};
+
+	this.draw = function (context) {
+		context.drawImage(images[ballImages[Math.floor(counter * period / framePeriod)]], x - 32, y - 32);
+	};
+}
+
+function Player(x, leftBound, rightBound, keys) {
+	var y = 150;
+	var blobbyImages = [
+		'blobbym1',
+		'blobbym2',
+		'blobbym3',
+		'blobbym4',
+		'blobbym5',
+		'blobbym4',
+		'blobbym3',
+		'blobbym2'
+	];
+	var index = 0;
+	this.tick = function (ball) {
+		if (keyboard[keys.left]) {
+			x -= 500 * period / 1000;
+		}
+		if (keyboard[keys.right]) {
+			x += 500 * period / 1000;
+		}
+		if (x - 40 < leftBound) {
+			x = leftBound + 40;
+		}
+		if (x + 40 > rightBound) {
+			x = rightBound - 40;
+		}
+		ball.testCollision(x, y, 40);
+	};
+	this.draw = function (context) {
+		context.drawImage(images[blobbyImages[index]], x - 74 / 2, y - 88 / 2);
+	};
+}
+
+$(function () {
+	(function () {
+		var preventedKeys = [
+			KeyEvent.DOM_VK_SPACE,
+			KeyEvent.DOM_VK_LEFT,
+			KeyEvent.DOM_VK_RIGHT,
+			KeyEvent.DOM_VK_UP,
+			KeyEvent.DOM_VK_DOWN
+		];
+		$(window).keydown(function (event) {
+			keyboard[event.which] = true;
+			return !(event.which in preventedKeys);
+		}).keyup(function (event) {
+			delete keyboard[event.which];
+			return !(event.which in preventedKeys);
+		});
+	})();
+
+	var ball = new Ball(184);
+	var player1 = new Player(-200, -440, 0, {
+		left: KeyEvent.DOM_VK_A,
+		right: KeyEvent.DOM_VK_D
+	});
+	var player2 = new Player(200, 0, 440, {
+		left: KeyEvent.DOM_VK_LEFT,
+		right: KeyEvent.DOM_VK_RIGHT
+	});
+
+	var render = new (function (context) {
+		context.setTransform(1, 0, 0, 1, 400, 300);
+		return function () {
+			context.drawImage(images.background, -400, -300);
+			ball.draw(context);
+			player1.draw(context);
+			player2.draw(context);
+		};
+	})($('canvas#canvas').get(0).getContext('2d'));
+
+	(function (ids, callback) {
+		var count = ids.length;
+		for (var i in ids) {
+			var image = new Image();
+			image.onload = function () {
+				if (!--count) {
+					callback();
+				}
+			};
+			image.src = 'media/' + ids[i] + '.png';
+			images[ids[i]] = image;
+		}
+	})([
+		'background',
+		'ball01',
+		'ball02',
+		'ball03',
+		'ball04',
+		'ball05',
+		'ball06',
+		'ball07',
+		'ball08',
+		'ball09',
+		'ball10',
+		'ball11',
+		'ball12',
+		'ball13',
+		'ball14',
+		'ball15',
+		'ball16',
+		'blobbym1',
+		'blobbym2',
+		'blobbym3',
+		'blobbym4',
+		'blobbym5'
+	], function () {
+		setInterval(function () {
+			ball.tick();
+			player1.tick(ball);
+			player2.tick(ball);
+			render();
+		}, period);
+	});
+});
+</script>
+</body>
+</html>
